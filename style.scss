@@ -11,6 +11,9 @@ html{
     height: 100%;
     width: 100;
 }
+
+
+
 table,tr,th,td {
     border:1px solid black;
     padding: 20px;
@@ -21,12 +24,101 @@ table,tr,th,td {
     height: 200px;
     background: white;
     border: 1px solid black;
-    padding: 10px;
+    padding: 30px;
     margin: auto;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
     z-index: 10;
+    text-align: center;
     display: none;
+    flex-direction: column;
+    justify-content: space-between;
   }  
+  h1{
+    font-size: 2vw;
+    text-align: center;
+  }
+
+.topPopUpContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items:start;
+}
+.closeButton {
+    border: none;
+    background-color: white;
+}
+
+.page-1 {
+    margin: 10vw;
+    text-align: center;
+}
+
+.page-2 {
+    display: none;
+    margin: 10vw;
+    text-align: center;
+}
+.page-3{
+    display: none;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.submitTeeBox {
+    display: none;
+}
+.addNewUser {
+    display: none;
+    text-align: center;
+    background-color: white;
+    padding: 8px;
+    border-radius: 24px;
+    border: 0px solid black;
+    box-shadow: 1px 1px 1px 1px rgb(236, 236, 236);
+}
+.newPlayerName{
+    margin: 10px;
+}
+.table {
+    margin-top: 7vw;
+    padding: 10px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    display: none;
+}
+.currentHoleContainer{
+    display: flex;
+    justify-content: center;
+    margin: 5vw;
+}
+.currentHoleTable {
+    text-align: start;
+    padding: 10px;
+    border: 1px solid black;
+    display: none;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 10px;
+  background-color: rgb(204, 253, 204);
+}
+.players {
+    display: flex;
+    flex-direction: column;
+}
+.newPlayers {
+    display: none;
+    flex-direction: column;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid black
+}
+
+#scorecard-container {
+    display: none;
+}
