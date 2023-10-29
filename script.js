@@ -11,8 +11,8 @@ var newId = 0
 var currentHoleNumber = 0 
 var playerArr = []
 var playerLimit = false
-
-
+var playerCount = 0
+var currentScore = ''
 
 // API call to get the available courses
 async function getAvailableCourses() {
@@ -92,55 +92,82 @@ function addPlayerHtml(){
 }
 
 
-function selectPreviousHole(){
-    let holeNumber = document.querySelector('.currentHoleNumber')
 
-    if(currentHoleNumber > 0){
-        currentHoleNumber = currentHoleNumber - 1
-    }
-
-        
-    displayCourseInfo()
-}
 
 function selectNextHole(){
+    for(i = 0; i < (newUser.id); i++){
+        console.log(document.querySelector(`#player${(i + 1)}score`).value === "")
+        if(document.querySelector(`#player${(i + 1)}score`).value === ""){
+            alert('Please Enter A Score For Each Player')
+            return
+        }
+        
+    }
+    
+    let player1 = document.querySelector('.players').firstElementChild
+    let nextPlayer = player1.nextElementSibling
+
     if(currentHoleNumber < 17){
         currentHoleNumber = currentHoleNumber + 1
     }
-    let playerElements = []
-    let player1 = document.querySelector('.players').firstElementChild
-    playerElements.push(player1.firstElementChild.value)
-    let nextPlayer = player1.nextElementSibling
-    if(playerArr[0].scores[currentHoleNumber] === undefined){
-        for(i = 0; i < (newUser.id - 1); i++){
-            console.log('test')
-            playerElements.push(nextPlayer.firstElementChild.value)
-            playerArr[i].scores.push(nextPlayer.firstElementChild.value)
-            console.log(nextPlayer.nextElementSibling)
-            nextPlayer = nextPlayer.nextElementSibling
-        }
-        nextPlayer = player1.nextElementSibling
-    }
-    
-    console.log(playerElements)
-    if((playerArr[0].scores.length) >= currentHoleNumber){
-        playerElements.forEach(function (elm, index){
-            playerArr[index].scores.splice((currentHoleNumber - 1), 1, elm)
-        })
-        console.log(playerArr)
-    }
-    else {
 
-        playerElements.forEach(function (elm, index){
-            console.log(playerArr[index].scores)
-             playerArr[index].scores.push(elm)
-        })
+
+    if(newUser.id !== 1){
+        if(playerArr[1].scores[currentHoleNumber - 1] === undefined){
+            if(playerArr[0].scores[currentHoleNumber - 1] === undefined){
+                playerArr[0].scores.push(player1.firstElementChild.value)
+            }
+            
+            for(i = 1; i < (newUser.id); i++){
+                playerArr[i].scores.push(nextPlayer.firstElementChild.value)
+                nextPlayer = nextPlayer.nextElementSibling
+            }
+            nextPlayer = player1.nextElementSibling
+        }
+    
+        for(i = 0; i < (newUser.id); i++){
+            document.querySelector(`#player${(i + 1)}score`).value = ""
+        }
     }
-    console.log(document.querySelector('.players').firstChild)
+    else{
+        if(playerArr[0].scores[currentHoleNumber - 1] === undefined){
+            if(playerArr[0].scores[currentHoleNumber - 1] === undefined){
+                playerArr[0].scores.push(player1.firstElementChild.value)
+            }
+        }
+        for(i = 0; i < (newUser.id); i++){
+            document.querySelector(`#player${(i + 1)}score`).value = ""
+        }
+    }
+   
+
+    
     displayCourseInfo()
+    addScoreToTable()
 }
 
+let currentScoreElementIndex = 1;
+
+function addScoreToTable(){
+
+    if(currentScoreElementIndex === 18){
+        alert('Game is Over')
+    }
+
+    for(let i = 0; i < newUser.id; i++){
+
+        let currentScore = document.querySelector(`.player${i + 1}score-sheet`).children[currentScoreElementIndex];
+        console.log(currentScore)
+        currentScore.innerHTML = playerArr[i].scores[currentHoleNumber - 1];
+
+    }
+    currentScoreElementIndex++;
+}
+
+
+
 async function displayCourseInfo() {
+    
     currentCourseInfo = await getCourseInfo();
     let currentHoleCounter = 1
     let currentHolesHtml = ''
@@ -160,6 +187,9 @@ async function displayCourseInfo() {
         currentPar += `<td>${currentCourseInfo.holes[i].teeBoxes[teeBoxValue].par}</td>`
         currentHandicap += `<td>${currentCourseInfo.holes[i].teeBoxes[teeBoxValue].hcp}</td>`
     }
+
+
+
     document.querySelector('.table').style.display = "block"
     document.querySelector('.addNewUser').style.display = "block"
     document.querySelector('.currentHoleTable').style.display = "block"
@@ -172,14 +202,22 @@ async function displayCourseInfo() {
     document.querySelector('.parRow').innerHTML = '<th>Par</th>' + currentPar
     document.querySelector('.handicapRow').innerHTML = '<th>Handicap</th>' + currentHandicap
 
+    
+   
+     
+    
+
+
     document.querySelector('.currentHoleNumber').innerHTML = 'Hole Number: ' + currentHoleArr[currentHoleNumber]
     document.querySelector('.currentYardage').innerHTML =  "Yardage: " + currentCourseInfo.holes[currentHoleNumber].teeBoxes[teeBoxValue].yards
     document.querySelector('.currentPar').innerHTML = 'Par: ' + currentCourseInfo.holes[currentHoleNumber].teeBoxes[teeBoxValue].par
-    document.querySelector('.currentHandicap').innerHTML = 'Par: ' + currentCourseInfo.holes[currentHoleNumber].teeBoxes[teeBoxValue].hcp
+    document.querySelector('.currentHandicap').innerHTML = 'Handicap: ' + currentCourseInfo.holes[currentHoleNumber].teeBoxes[teeBoxValue].hcp
     
 }
 
-
+function displayScoreBoard(){
+    document.querySelector('#scorecard-container').style.display = "flex"
+}
 
 function displayPopup (){
     if(playerLimit === false){
@@ -231,19 +269,11 @@ function submitNewPlayer(){
         playerArr.push(newUser)
         document.querySelector('.newPlayers').innerHTML += `<div>Player${newUser.id}: ${newUser.name}</div>`
         document.querySelector('.submitTeeBox').style.display = "block"
-        document.querySelector('.table').innerHTML += `<tr><th>${newUser.name}</th><td class="firstHoleScore" ></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`
+        document.querySelector('.table').innerHTML += `<tr class= "player${newUser.id}score-sheet"><th>${newUser.name}</th><td class="firstHoleScore" ></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`
         document.querySelector('.players').innerHTML += `<div class="player${newUser.id}">${newUser.name} <input id="player${newUser.id}score" maxlength="3" type="number"></div>`
         popupWindow.style.display = "none"
         document.querySelector('.newPlayers').style.display = "flex"
-        document.querySelector('.firstHoleScore').contentEditable = true
-        document.querySelectorAll('.firstHoleScore').forEach(element => {
-            element.addEventListener('input', function() {
-                this.textContent = this.textContent.replace(/\D/g, '');
-              if (this.textContent.length > 3) {
-                this.textContent = this.textContent.slice(0, 3);
-              }
-            });
-        })
+
         document.querySelector('.newPlayerName').value = " "
     }
     else{
@@ -254,8 +284,8 @@ function submitNewPlayer(){
     if(newUser.id === 4 ){
         playerLimit = true
     }
-}
 
+}
 
 
 
